@@ -20,6 +20,18 @@ if not api_key:
     st.stop()
 client = openai.OpenAI(api_key=api_key)
 
+# Hilfe als Dropdown (nach API Key)
+with st.expander("ℹ️ Hilfe: CSV-Struktur & Beispiele"):
+    st.markdown("""
+**Benötigte Spaltennamen:**  
+`URL`, `Status code`, `H1`, `Title Tag`, `Meta Description`, `Body Content`  
+Varianten wie `Address`, `Title`, `Description`, `Content` werden ebenfalls erkannt.  
+Spalten wie `Klicks` oder `Backlinks` werden ignoriert.
+
+📄 Beispiele:  
+- [ALT-Crawl (CSV 1)](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=1748388150#gid=1748388150)  
+- [NEU-Crawl (CSV 2)](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=439667529#gid=439667529)
+""")
 
 # Embedding Modellwahl
 st.header("🧠 Embedding-Modell wählen")
@@ -39,26 +51,13 @@ suffix_alt = st.text_input("🔧 Title Tag Suffix ALT", value="")
 suffix_neu = st.text_input("🔧 Title Tag Suffix NEU", value="")
 threshold = st.slider("🔒 Mindest-Similarity für gültige Matches", min_value=0.0, max_value=1.0, value=0.7, step=0.01)
 
-# Uploads
+# Upload ALT/NEU
 uploaded_old = st.file_uploader("📁 ALT-Crawl (CSV 1)", type="csv")
-
-# Hilfe als Dropdown (nach API Key)
-with st.expander("ℹ️ Hilfe: CSV-Struktur"):
-    st.markdown("""
-**Benötigte Spaltennamen:**`URL`, `Status code`, `H1`, `Title Tag`, `Meta Description`, `Body Content`
-""")
-
-
 uploaded_new = st.file_uploader("📁 NEU-Crawl (CSV 2)", type="csv")
+
 if not uploaded_old or not uploaded_new:
-    
-    
-# Hilfe als Dropdown (nach API Key)
-with st.expander("ℹ️ Hilfe: CSV-Struktur"):
-    st.markdown("""
-**Benötigte Spaltennamen:**`URL`, `Status code`, `H1`, `Title Tag`, `Meta Description`, `Body Content`
-""")
-st.stop()
+    st.stop()
+
 
 # Daten einlesen
 df_old = pd.read_csv(uploaded_old)
