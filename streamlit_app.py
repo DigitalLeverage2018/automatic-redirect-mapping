@@ -98,18 +98,18 @@ for idx_old, row_old in df_old.iterrows():
         if sim >= threshold:
             candidates.append((match_count, sim, idx_new, h1, title, meta))
 
-    if not candidates:
-        results.append({
-            "Old URL": row_old.get("URL", ""),
-            "New URL": "",
-            "Similarity Score": "",
-            "Match": "No Match",
-            "Confidence Score": "low",
-            "H1 Match": False,
-            "Title Tag Match": False,
-            "Meta Description Match": False
-        })
-        continue
+if not candidates:
+    results.append({
+        "Old URL": row_old.get("URL", ""),
+        "New URL": "",
+        "Similarity Score": "",
+        "Match": "No Match",
+        "Confidence Score": "",
+        "H1 Match": False,
+        "Title Tag Match": False,
+        "Meta Description Match": False
+    })
+    continue
 
     candidates.sort(key=lambda x: (x[0], x[1]), reverse=True)
     match_count, sim_score, best_idx, h1_match, title_match, meta_match = candidates[0]
