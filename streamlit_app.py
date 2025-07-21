@@ -12,11 +12,6 @@ st.markdown("""
 Lade zwei Crawls deiner alten und neuen Website als CSV hoch – dieses Tool hilft dir, passende Weiterleitungen zu finden.  
 Nur Seiten mit Status **200** werden berücksichtigt.  
 🧠 Verglichen werden Onpage-Elemente (H1, Title, Meta) und der Seiteninhalt mittels Embeddings von OpenAI.
-
----
-### 🧾 Beispiel-Struktur der Uploads
-**ALT-Crawl (CSV 1):** [Beispiel ansehen](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=1748388150#gid=1748388150)  
-**NEU-Crawl (CSV 2):** [Beispiel ansehen](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=439667529#gid=439667529)
 """)
 
 # OpenAI API Key
@@ -24,6 +19,18 @@ api_key = st.text_input("🔑 OpenAI API Key", type="password")
 if not api_key:
     st.stop()
 client = openai.OpenAI(api_key=api_key)
+
+# Hilfe als Dropdown (nach API Key)
+with st.expander("ℹ️ Hilfe: CSV-Struktur & Beispiele anzeigen"):
+    st.markdown("""
+**ALT-Crawl (CSV 1):** [Beispiel ansehen](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=1748388150#gid=1748388150)  
+**NEU-Crawl (CSV 2):** [Beispiel ansehen](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=439667529#gid=439667529)
+
+Benötigte Spaltennamen (werden automatisch erkannt, auch bei Varianten wie „Address“ oder „Description“):  
+- `URL`, `H1`, `Title Tag`, `Meta Description`, `Body Content`, `Status code`  
+Andere Spalten wie `Klicks` oder `Backlinks` werden ignoriert.
+""")
+
 
 # Embedding Modellwahl
 st.header("🧠 Embedding-Modell wählen")
