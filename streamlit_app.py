@@ -40,13 +40,15 @@ threshold = st.slider("🔒 Mindest-Similarity für gültige Matches", min_value
 
 # Upload ALT/NEU
 
+uploaded_old = st.file_uploader("📁 ALT-Crawl (CSV 1)", type="csv")
+
 with st.expander("ℹ️ ALT-Crawl: Benötigte Spalten anzeigen"):
     st.markdown("""
 **Benötigte Spaltennamen:**  
 `URL`, `Status code`, `H1`, `Title Tag`, `Meta Description`, `Body Content`
 """)
 
-uploaded_old = st.file_uploader("📁 ALT-Crawl (CSV 1)", type="csv")
+uploaded_new = st.file_uploader("📁 NEU-Crawl (CSV 2)", type="csv")
 
 with st.expander("ℹ️ NEU-Crawl: Benötigte Spalten anzeigen"):
     st.markdown("""
@@ -54,7 +56,6 @@ with st.expander("ℹ️ NEU-Crawl: Benötigte Spalten anzeigen"):
 `URL`, `Status code`, `H1`, `Title Tag`, `Meta Description`, `Body Content`
 """)
 
-uploaded_new = st.file_uploader("📁 NEU-Crawl (CSV 2)", type="csv")
 
 
 if not uploaded_old or not uploaded_new:
