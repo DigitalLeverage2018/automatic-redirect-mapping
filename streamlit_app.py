@@ -166,4 +166,5 @@ st.success("✅ Matching abgeschlossen")
 st.dataframe(result_df)
 
 csv = result_df.to_csv(index=False).encode('utf-8')
-st.download_button("📥 Ergebnis als CSV herunterladen", data=csv, file_name="redirect_mapping.c_
+st.download_button("📥 Ergebnis als CSV herunterladen", data=csv, file_name="redirect_mapping.csv", mime="text/csv")
+
