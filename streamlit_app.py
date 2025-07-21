@@ -9,9 +9,7 @@ import re
 st.title("🔁 Automatisches Redirect-Mapping")
 
 st.markdown("""
-Lade zwei Crawls deiner alten und neuen Website als CSV hoch – dieses Tool hilft dir, passende Weiterleitungen zu finden.  
-Nur Seiten mit Status **200** werden berücksichtigt.  
-🧠 Verglichen werden Onpage-Elemente (H1, Title, Meta) und der Seiteninhalt mittels Embeddings von OpenAI.
+Lade zwei Crawls deiner alten und neuen Website als CSV hoch. Dieses Tool hilft dir, passende Weiterleitungen zu finden.
 """)
 
 # OpenAI API Key
@@ -21,7 +19,7 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 
 # Embedding Modellwahl
-st.header("🧠 Embedding-Modell wählen")
+st.header("Embedding-Modell wählen")
 model_choice = st.selectbox(
     "Welches Modell möchtest du verwenden?",
     options=["text-embedding-3-small", "text-embedding-3-large"],
@@ -33,16 +31,16 @@ st.markdown("""
 """)
 
 # Matching Einstellungen
-st.header("⚙️ Einstellungen")
+st.header("⚙Einstellungen")
 suffix_alt = st.text_input("🔧 Title Tag Suffix ALT", value="")
 suffix_neu = st.text_input("🔧 Title Tag Suffix NEU", value="")
-threshold = st.slider("🔒 Mindest-Similarity für gültige Matches", min_value=0.0, max_value=1.0, value=0.7, step=0.01)
+threshold = st.slider("Mindest-Similarity für gültige Matches", min_value=0.0, max_value=1.0, value=0.7, step=0.01)
 
 # Upload ALT/NEU
 
 uploaded_old = st.file_uploader("📁 ALT-Crawl (CSV 1)", type="csv")
 
-with st.expander("ℹ️ ALT-Crawl: Benötigte Spalten anzeigen"):
+with st.expander("ALT-Crawl: Benötigte Spalten anzeigen"):
     st.markdown("""
 **Benötigte Spaltennamen:**  
 `URL`, `Status code`, `H1`, `Title Tag`, `Meta Description`, `Body Content`
@@ -50,7 +48,7 @@ with st.expander("ℹ️ ALT-Crawl: Benötigte Spalten anzeigen"):
 
 uploaded_new = st.file_uploader("📁 NEU-Crawl (CSV 2)", type="csv")
 
-with st.expander("ℹ️ NEU-Crawl: Benötigte Spalten anzeigen"):
+with st.expander("NEU-Crawl: Benötigte Spalten anzeigen"):
     st.markdown("""
 **Benötigte Spaltennamen:**  
 `URL`, `Status code`, `H1`, `Title Tag`, `Meta Description`, `Body Content`
