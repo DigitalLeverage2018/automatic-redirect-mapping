@@ -6,7 +6,7 @@ import openai
 import re
 
 # Titel & Beschreibung
-st.title("🔁 Automatisches Redirect-Mapping")
+st.title("Automatisches Redirect-Mapping")
 
 st.markdown("""
 Lade zwei Crawls deiner alten und neuen Website als CSV hoch. Dieses Tool hilft dir, passende Weiterleitungen zu finden.
@@ -31,7 +31,7 @@ st.markdown("""
 """)
 
 # Matching Einstellungen
-st.header("⚙Einstellungen")
+st.header("Einstellungen")
 suffix_alt = st.text_input("🔧 Title Tag Suffix ALT", value="")
 suffix_neu = st.text_input("🔧 Title Tag Suffix NEU", value="")
 threshold = st.slider("Mindest-Similarity für gültige Matches", min_value=0.0, max_value=1.0, value=0.7, step=0.01)
