@@ -20,17 +20,6 @@ if not api_key:
     st.stop()
 client = openai.OpenAI(api_key=api_key)
 
-# Hilfe als Dropdown (nach API Key)
-with st.expander("ℹ️ Hilfe: CSV-Struktur & Beispiele anzeigen"):
-    st.markdown("""
-**ALT-Crawl (CSV 1):** [Beispiel ansehen](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=1748388150#gid=1748388150)  
-**NEU-Crawl (CSV 2):** [Beispiel ansehen](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=439667529#gid=439667529)
-
-Benötigte Spaltennamen (werden automatisch erkannt, auch bei Varianten wie „Address“ oder „Description“):  
-- `URL`, `H1`, `Title Tag`, `Meta Description`, `Body Content`, `Status code`  
-Andere Spalten wie `Klicks` oder `Backlinks` werden ignoriert.
-""")
-
 
 # Embedding Modellwahl
 st.header("🧠 Embedding-Modell wählen")
@@ -52,9 +41,33 @@ threshold = st.slider("🔒 Mindest-Similarity für gültige Matches", min_value
 
 # Uploads
 uploaded_old = st.file_uploader("📁 ALT-Crawl (CSV 1)", type="csv")
+
+# Hilfe als Dropdown (nach API Key)
+with st.expander("ℹ️ Hilfe: CSV-Struktur & Beispiele anzeigen"):
+    st.markdown("""
+**ALT-Crawl (CSV 1):** [Beispiel ansehen](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=1748388150#gid=1748388150)  
+Benötigte Spaltennamen (werden automatisch erkannt, auch bei Varianten wie „Address“ oder „Description“):  
+- `URL`, `H1`, `Title Tag`, `Meta Description`, `Body Content`, `Status code`  
+Andere Spalten wie `Klicks` oder `Backlinks` werden ignoriert.
+""")
+
+
+
+
 uploaded_new = st.file_uploader("📁 NEU-Crawl (CSV 2)", type="csv")
 if not uploaded_old or not uploaded_new:
     st.stop()
+
+
+
+# Hilfe als Dropdown (nach API Key)
+with st.expander("ℹ️ Hilfe: CSV-Struktur & Beispiele anzeigen"):
+    st.markdown("""
+**ALT-Crawl (CSV 1):** [Beispiel ansehen](https://docs.google.com/spreadsheets/d/12eVKrQVT_pkuxiyro2ZJEJiyc3FssblxviLOtaSPMAU/edit?gid=1748388150#gid=1748388150)  
+Benötigte Spaltennamen (werden automatisch erkannt, auch bei Varianten wie „Address“ oder „Description“):  
+- `URL`, `H1`, `Title Tag`, `Meta Description`, `Body Content`, `Status code`  
+Andere Spalten wie `Klicks` oder `Backlinks` werden ignoriert.
+""")
 
 # Daten einlesen
 df_old = pd.read_csv(uploaded_old)
