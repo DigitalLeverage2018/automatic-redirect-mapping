@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import openai
 import tiktoken
 
-# --- API Key Input ---
+# --- Titel & API-Key ---
 st.title("🔁 Automatische Redirect-Mappings erstellen")
 api_key = st.text_input("🔑 OpenAI API Key eingeben", type="password")
 if not api_key:
@@ -22,6 +22,20 @@ if not uploaded_old or not uploaded_new:
 
 df_old = pd.read_csv(uploaded_old)
 df_new = pd.read_csv(uploaded_new)
+
+# --- URL-Spalten prüfen und normalisieren ---
+for df in [df_old, df_new]:
+    if "URL" not in df.columns:
+        st.error("❌ Beide CSV-Dateien müssen eine Spalte 'URL' enthalten.")
+        st.stop()
+    df["URL"] = df["URL"].astype(str).str.strip()
+
+# --- ALT: Doppelte alte URLs entfernen ---
+initial_count = len(df_old)
+df_old = df_old.drop_duplicates(subset="URL", keep="first").reset_index(drop=True)
+removed = initial_count - len(df_old)
+if removed > 0:
+    st.info(f"🔁 {removed} doppelte alte URLs entfernt – nur erste Vorkommen berücksichtigt.")
 
 # --- Vorbereitung ---
 df_old.fillna("", inplace=True)
@@ -60,28 +74,51 @@ for idx_old, row_old in df_old.iterrows():
         "Old URL": row_old.get('URL', ""),
         "New URL": row_new.get('URL', ""),
         "Similarity Score": round(similarity_score, 4),
-    }
 
-    # Onpage Element Vergleich
-    for field in ['H1', 'Title Tag', 'Meta Description']:
-        val_old = str(row_old.get(field, "")).strip().lower()
-        val_new = str(row_new.get(field, "")).strip().lower()
-        if val_old and val_new:
-            if val_old == val_new:
-                match_details[f"{field} Match"] = "Exact Match"
-            elif val_old in val_new or val_new in val_old:
-                match_details[f"{field} Match"] = "Partial Match"
-            else:
-                match_details[f"{field} Match"] = "No Match"
-        else:
-            match_details[f"{field} Match"] = "Missing"
+        # Onpage Matching
+        "H1 Match": "Exact Match" if row_old.get("H1", "").strip().lower() == row_new.get("H1", "").strip().lower() else (
+            "Partial Match" if row_old.get("H1", "").strip().lower() in row_new.get("H1", "").strip().lower() or row_new.get("H1", "").strip().lower() in row_old.get("H1", "").strip().lower() else "No Match"
+        ),
+        "Title Tag Match": "Exact Match" if row_old.get("Title Tag", "").strip().lower() == row_new.get("Title Tag", "").strip().lower() else (
+            "Partial Match" if row_old.get("Title Tag", "").strip().lower() in row_new.get("Title Tag", "").strip().lower() or row_new.get("Title Tag", "").strip().lower() in row_old.get("Title Tag", "").strip().lower() else "No Match"
+        ),
+        "Meta Description Match": "Exact Match" if row_old.get("Meta Description", "").strip().lower() == row_new.get("Meta Description", "").strip().lower() else (
+            "Partial Match" if row_old.get("Meta Description", "").strip().lower() in row_new.get("Meta Description", "").strip().lower() or row_new.get("Meta Description", "").strip().lower() in row_old.get("Meta Description", "").strip().lower() else "No Match"
+        ),
+
+        # ALT-Infos
+        "Status Code ALT": row_old.get("Status code", ""),
+        "H1 ALT": row_old.get("H1", ""),
+        "Title Tag ALT": row_old.get("Title Tag", ""),
+        "Meta Description ALT": row_old.get("Meta Description", ""),
+        "Body Content ALT": row_old.get("Body Content", ""),
+        "Klicks": row_old.get("Klicks", ""),
+        "Backlinks": row_old.get("Backlinks", ""),
+
+        # NEU-Infos
+        "Status Code NEU": row_new.get("Status Code", ""),
+        "H1 NEU": row_new.get("H1", ""),
+        "Title Tag NEU": row_new.get("Title Tag", ""),
+        "Meta Description NEU": row_new.get("Meta Description", ""),
+        "Body Content NEU": row_new.get("Body Content", "")
+    }
 
     results.append(match_details)
 
-# --- Ergebnis anzeigen ---
+# --- Ergebnis sichern & validieren ---
 result_df = pd.DataFrame(results)
+
+# Nur 1 Zeile pro alte URL
+before_dedup = len(result_df)
+result_df = result_df.drop_duplicates(subset="Old URL", keep="first")
+after_dedup = len(result_df)
+if before_dedup > after_dedup:
+    st.warning(f"⚠️ {before_dedup - after_dedup} doppelte alte URLs im Ergebnis entfernt – pro alte URL nur ein Redirect.")
+
+# --- Ergebnis anzeigen ---
 st.success("✅ Mapping abgeschlossen")
 st.dataframe(result_df)
 
+# --- Download ---
 csv = result_df.to_csv(index=False).encode('utf-8')
 st.download_button("📥 Ergebnis als CSV herunterladen", data=csv, file_name="redirect_mapping.csv", mime="text/csv")
