@@ -51,14 +51,14 @@ with st.expander("ℹ️ Hilfe: CSV-Struktur"):
 
 uploaded_new = st.file_uploader("📁 NEU-Crawl (CSV 2)", type="csv")
 if not uploaded_old or not uploaded_new:
-    st.stop()
+    
     
 # Hilfe als Dropdown (nach API Key)
 with st.expander("ℹ️ Hilfe: CSV-Struktur"):
     st.markdown("""
 **Benötigte Spaltennamen:**`URL`, `Status code`, `H1`, `Title Tag`, `Meta Description`, `Body Content`
 """)
-
+st.stop()
 
 # Daten einlesen
 df_old = pd.read_csv(uploaded_old)
